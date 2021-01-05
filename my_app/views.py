@@ -24,7 +24,6 @@ def delete_wishlist(request, wishlist_id):
     models.Wishlist.objects.get(id=wishlist_id).delete()
     return HttpResponseRedirect("/")      
 
-
 def check_wishlist(request):
     wishlist_items = models.Wishlist.objects.all().order_by("-added_date")
     
@@ -33,3 +32,18 @@ def check_wishlist(request):
         checkwishlist.check_price(wishlist_items[i].url, wishlist_items[i].expected_price) 
 
     return HttpResponseRedirect("/")
+
+def edit_wishlist(request, wishlist_id):
+    wishlist_item = models.Wishlist.objects.get(id=wishlist_id)
+    return render(request, 'my_app/edit.html', {"wishlist_item":wishlist_item}) 
+
+def update_wishlist(request, wishlist_id):
+    url = request.POST.get('url')
+    item_name = request.POST.get('item_name')
+    expected_price = request.POST.get('expected_price')
+    models.Wishlist.objects.filter(id=wishlist_id).update(
+        url = url,
+        item_name = item_name,
+        expected_price = float(expected_price)
+    )
+    return HttpResponseRedirect("/")     

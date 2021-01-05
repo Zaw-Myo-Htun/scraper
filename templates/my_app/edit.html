@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row mt-4">
+    <div class="col">
+        <h2>Edit Item</h2>
+        <form class="form-inline" action="{% url 'update_wishlist' wishlist_item.id %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="url" class="form-control mb-2 mr-sm-2" value="{{ wishlist_item.url }}">
+            <input type="text" name="item_name" class="form-control mb-2 mr-sm-2" value="{{ wishlist_item.item_name }}">
+            <input type="number" name="expected_price" min="0" value={{ wishlist_item.expected_price }} step=".01" class="form-control mb-2 mr-sm-2">
+            <button type="submit" class="btn btn-primary mb-2">Edit Item</button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

@@ -21,11 +21,17 @@
         <ul class="list-group">
             {% for wishlist_item in wishlist_items %}
                 <li class="list-group-item">{{ wishlist_item.item_name }} - {{ wishlist_item.expected_price }}
-                    <div class="float-end">
+                    <div class="float-end btn"> 
                         <form action="{% url 'delete_wishlist' wishlist_item.id %}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                         </form>    
+                    </div>
+                    <div class="float-end btn">
+                        <form action="{% url 'edit_wishlist' wishlist_item.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-primary">Edit</button>
+                        </form>
                     </div>
                 </li>
             {% endfor %}
