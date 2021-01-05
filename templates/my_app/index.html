@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row mt-4">
+    <div class="col">
+        <h2>Add Item</h2>
+        <form class="form-inline" action="{% url 'add_wishlist' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="url" class="form-control mb-2 mr-sm-2" placeholder="type URL here...">
+            <input type="text" name="item_name" class="form-control mb-2 mr-sm-2" placeholder="type item name here...">
+            <input type="number" name="expected_price" min="0" value="0" step=".01" class="form-control mb-2 mr-sm-2">
+            <button type="submit" class="btn btn-primary mb-2">Add Item</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col">
+        <h2>Wishlist Items</h2>
+        <ul class="list-group">
+            {% for wishlist_item in wishlist_items %}
+                <li class="list-group-item">{{ wishlist_item.item_name }} - {{ wishlist_item.expected_price }}
+                    <div class="float-end">
+                        <form action="{% url 'delete_wishlist' wishlist_item.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>    
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col">
+        <form class="form-inline" action="{% url 'check_wishlist' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary mb-2">Check</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
