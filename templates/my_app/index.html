@@ -24,7 +24,7 @@
                     <div class="float-end">
                         <form action="{% url 'delete_wishlist' wishlist_item.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger">Deletes</button>
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                         </form>    
                     </div>
                 </li>
