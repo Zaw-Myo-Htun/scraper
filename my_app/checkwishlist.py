@@ -15,7 +15,7 @@ def get_symbol(price):
     g = re.match(pattern, price.strip()).groups()
     return (g[0] or g[1]).strip()
 
-def check_price(url, expectedPrice):
+def check_price(url, expectedPrice, messageBody):
     page = requests.get(url, headers=headers)
 
     soup = BeautifulSoup(page.content, features='html.parser')
@@ -25,6 +25,7 @@ def check_price(url, expectedPrice):
         return
 
     title = soup.find(id="pdp_product_title").get_text()
+    messageBody += title.strip() + "\n"
 
     originalPrice = 0.0
     discountPrice = 0.0
@@ -46,22 +47,30 @@ def check_price(url, expectedPrice):
 
     print(" ", title.strip())
     if discountPrice != 0:
+        messageBody += "  Discount Price - " + str(discountPrice) + "\n"
         print("  Discount Price -", discountPrice)
     else:
+        messageBody += "  This item has no discount price!" + "\n"
         print("  This item has no discount price!")
 
     if originalPrice != 0:
+        messageBody += "  Original Price - " + str(originalPrice) + "\n"
         print("  Original Price -", originalPrice)
     else:
+        messageBody += "  Original price cannot be found!" + "\n"
         print("  Original price cannot be found!")
 
+    messageBody += "  Expected Price - " + str(expectedPrice) + "\n"
     # let users input the price that they want it to be less than or equal
     if((discountPrice != 0 and discountPrice <= expectedPrice) or (originalPrice != 0 and originalPrice <= expectedPrice)):
-        send_email(title, discountPrice, originalPrice, expectedPrice, url)
+        messageBody += "  Check the link " + url + "\n\n"
+        #send_email(title, discountPrice, originalPrice, expectedPrice, url)
     else:
+        messageBody += "  The price is still more than your expected price - " + str(expectedPrice) + "!" + "\n\n"
         print("  The price is still more than your expected price -",
               str(expectedPrice) + "!")
-
+    return messageBody
+"""
 def send_email(title, discountPrice, originalPrice, expectedPrice, url):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
@@ -74,6 +83,26 @@ def send_email(title, discountPrice, originalPrice, expectedPrice, url):
     body = title.strip() + "\n" + " Discount Price - " + str(discountPrice) + "\n" + " Original Price - " + str(originalPrice) + \
         "\n" + " Expected Price - " + \
         str(expectedPrice) + "\n" + "Check the link " + url
+
+    msg = f"Subject: {subject}\n\n{body}"
+
+    server.sendmail(
+        'scrapertestingapp@gmail.com',
+        'jzhtun@gmail.com',
+        msg
+    )
+    server.quit()
+"""
+def send_email(messageBody):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+
+    server.login("scrapertestingapp@gmail.com", "uk7ySFTf4HL4E9n")
+    
+    subject = 'CHECK THE PRICE!!!!'
+    body = messageBody
 
     msg = f"Subject: {subject}\n\n{body}"
 

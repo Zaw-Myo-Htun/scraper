@@ -26,10 +26,14 @@ def delete_wishlist(request, wishlist_id):
 
 def check_wishlist(request):
     wishlist_items = models.Wishlist.objects.all().order_by("-added_date")
-    
+    messageBody = ""
     for i in range(len(wishlist_items)):
         print("Item", (i+1))
-        checkwishlist.check_price(wishlist_items[i].url, wishlist_items[i].expected_price) 
+        messageBody = checkwishlist.check_price(wishlist_items[i].url, wishlist_items[i].expected_price,messageBody) 
+
+        #checkwishlist.check_price(wishlist_items[i].url, wishlist_items[i].expected_price) 
+    
+    checkwishlist.send_email(messageBody)
 
     return HttpResponseRedirect("/")
 
